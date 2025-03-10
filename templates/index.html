@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body class="min-h-screen bg-gray-100 flex flex-col">
+    <nav class="bg-white border-b border-gray-200 px-4 py-2.5">
+        <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl font-semibold">SemaREC-Source</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto space-y-8">
+            <div 
+                id="drop-zone"
+                class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 transition-colors bg-white hover:bg-gray-50"
+            >
+                <input
+                    type="file"
+                    id="file-upload"
+                    class="hidden"
+                    accept="image/*"
+                >
+                <label 
+                    for="file-upload"
+                    class="flex flex-col items-center justify-center cursor-pointer"
+                >
+                    <svg 
+                        class="w-12 h-12 mb-4 text-gray-400" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                    >
+                        <path 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            stroke-width="2" 
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                        />
+                    </svg>
+                    <p class="text-lg font-medium text-center mb-2" id="drop-text">
+                        Drag and drop your image here
+                    </p>
+                    <p class="text-sm text-gray-500">or click to browse</p>
+                    <p class="mt-2 text-xs text-gray-400">
+                        Supports: JPG, PNG, GIF (Max 800x400px)
+                    </p>
+                </label>
+            </div>
+
+            <div id="result-container" class="hidden flex justify-center">
+                <div class="relative bg-white rounded-lg shadow p-4 w-full">
+                    <div class="flex items-center justify-center">
+                        <div class="relative">
+                            <img 
+                                id="result-image"
+                                src="" 
+                                alt="Processed" 
+                                class="max-w-full rounded-lg"
+                            >
+                            <div id="detection-text" class="absolute top-0 right-0 transform translate-x-full px-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading-spinner" class="hidden flex justify-center">
+                <div class="spinner rounded-full h-10 w-10 border-2 border-blue-500 border-t-transparent"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-4">
+        <div class="max-w-screen-xl mx-auto px-4">
+            <div class="text-center text-sm text-gray-500">
+                © 2025 <a href="https://github.com/AHG-BSCS" class="hover:underline">
+                    Al Hans Gaming
+                </a>. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+    <script src="../static/js/functions.js"></script>
+</body>
+</html>
