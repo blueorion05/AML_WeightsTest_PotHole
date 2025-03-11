@@ -23,8 +23,10 @@
    ![image](https://github.com/user-attachments/assets/4d7f5d86-96ce-44bb-9875-58daf3cade20)
    ![image](https://github.com/user-attachments/assets/9efceedf-390c-4a98-b024-532ed216679d)
 
-5) Save your weights.pt to the `model` folder of the repository.
-6) Start the Flask server by using the command
+Sidenote: **Obtain an API Key from ngrok by signing up for a free account**
+
+6) Save your weights.pt to the `model` folder of the repository.
+7) Start the Flask server by using the command
 
    `python app.py`
 
