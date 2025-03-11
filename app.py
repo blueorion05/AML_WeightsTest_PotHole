@@ -4,6 +4,7 @@ import os
 import time
 import base64
 import webbrowser
+from pyngrok import ngrok
 from flask import Flask, jsonify, request, render_template, send_file, Response
 from werkzeug.utils import secure_filename
 from ultralytics import YOLO
@@ -19,7 +20,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 class Detection:
     def __init__(self):
-        self.model = YOLO(r"model\weights.pt")
+        self.model = YOLO(r"model/weights.pt")
         self.latest_detection = "No detections"
 
     def predict(self, img, classes=[], conf=0.5):
@@ -143,6 +144,9 @@ def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    webbrowser.open("http://localhost:8000/")
+    port = 8000
+    public_url = ngrok.connect(port).public_url  # Expose Flask app
+    print(f" * ngrok tunnel available at {public_url}")
+    webbrowser.open(public_url)  # Open in browser
     time.sleep(1)
-    app.run(host="0.0.0.0", port=8000)
+    app.run(port=port)
