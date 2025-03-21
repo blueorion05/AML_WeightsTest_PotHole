@@ -65,52 +65,62 @@ detection = Detection()
 def index():
     return render_template('index.html')
 
+@app.route('/get-models')
+def get_models():
+    model_folder = "model/"
+    models = [f for f in os.listdir(model_folder) if f.endswith('.pt')]
+    return jsonify(models)
+
 @app.route('/object-detection/', methods=['POST'])
 def apply_detection():
     if 'image' not in request.files:
         return jsonify({"error": "No file part"}), 400
 
     file = request.files['image']
+    model_name = request.form.get('model_name')
+
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
-    if file:
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if not model_name:
+        return jsonify({"error": "No model selected"}), 400
 
-        try:
-            # Save the uploaded file
-            file.save(file_path)
-            print(f"✅ File saved at: {file_path}")  # Debugging step
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
 
-            # Read image
-            img = cv2.imread(file_path)
-            if img is None:
-                raise ValueError("❌ Failed to read the image.")
+    try:
+        # Save the uploaded file
+        file.save(file_path)
 
-            # Resize image for YOLO detection
-            img = cv2.resize(img, (640, 640))
+        # Load the selected model
+        model_path = os.path.join("model", model_name)
+        detection.model = YOLO(model_path)
 
-            # Run object detection
-            img, detection_info = detection.predict_and_detect(img)
+        # Read image
+        img = cv2.imread(file_path)
+        if img is None:
+            raise ValueError("Failed to read the image.")
 
-            # Encode processed image to base64
-            _, buffer = cv2.imencode('.png', img)
-            img_base64 = base64.b64encode(buffer).decode('utf-8')
+        img = cv2.resize(img, (640, 640))
 
-            detected_text = detection.latest_detection 
+        # Run object detection
+        img, detection_info = detection.predict_and_detect(img)
 
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-        finally:
-            # Remove file after processing to prevent storage overflow
-            if os.path.exists(file_path):
-                os.remove(file_path)
+        # Encode processed image to base64
+        _, buffer = cv2.imencode('.png', img)
+        img_base64 = base64.b64encode(buffer).decode('utf-8')
 
-        return jsonify({
-            "result_img": img_base64,
-            "detected_text": detected_text 
-        }), 200
+        detected_text = detection.latest_detection 
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+    return jsonify({
+        "result_img": img_base64,
+        "detected_text": detected_text 
+    }), 200
 
 @app.route('/live_video.html')
 def live_video():
